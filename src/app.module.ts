@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { ServiceInfoModule } from './modules/service-info/service-info.module';
 import Database from './database';
 import { UsersModule } from './modules/users/users.module';
+import { ProfessionalModule } from './modules/professionals/professional.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { UsersModule } from './modules/users/users.module';
     Database.build(),
     ServiceInfoModule,
     UsersModule,
+    ProfessionalModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -58,4 +58,12 @@ export class CreateServiceInfoDto {
   @IsNotEmpty()
   @IsString()
   planning: string;
+
+  @IsNotEmpty()
+  @IsString()
+  clientId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  professionalId: string;
 }

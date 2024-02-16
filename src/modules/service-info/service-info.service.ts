@@ -18,7 +18,7 @@ export class ServiceInfoService {
   async createServiceInfo(data: CreateServiceInfoDto) {
     const serviceInfo = await this.serviceInfoRepository.create(data);
     await this.serviceInfoRepository.save(serviceInfo);
-    const pdfBuffer = await this.pdfService.generatePDF(serviceInfo);
+    const pdfBuffer = await this.pdfService.generatePDF(data);
 
     return await this.mailerService.sendMail({
       to: 'it.support@klaston.com',
