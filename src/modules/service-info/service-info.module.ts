@@ -5,6 +5,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigModule } from '@nestjs/config';
 import { ServiceInfoController } from './service-info.controller';
 import { ServiceInfoService } from './service-info.service';
+import { PDFService } from './pdfs.service';
 
 @Module({
   imports: [
@@ -27,6 +28,6 @@ import { ServiceInfoService } from './service-info.service';
     }),
   ],
   controllers: [ServiceInfoController],
-  providers: [ServiceInfoService],
+  providers: [ServiceInfoService, PDFService],
 })
 export class ServiceInfoModule {}

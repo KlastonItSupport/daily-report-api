@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ServiceInfoEntity } from './entities/service_info.entity';
 import { CreateServiceInfoDto } from './dtos/create-info.dto';
+import { PDFService } from './pdfs.service';
 
 @Injectable()
 export class ServiceInfoService {
@@ -11,24 +12,27 @@ export class ServiceInfoService {
     @InjectRepository(ServiceInfoEntity)
     private readonly serviceInfoRepository: Repository<ServiceInfoEntity>,
     private mailerService: MailerService,
+    private pdfService: PDFService,
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async createServiceInfo(data: CreateServiceInfoDto) {
-    // const serviceInfo = await this.serviceInfoRepository.create(data);
-    // await this.serviceInfoRepository.save(serviceInfo);
+    const serviceInfo = await this.serviceInfoRepository.create(data);
+    await this.serviceInfoRepository.save(serviceInfo);
+    const pdfBuffer = await this.pdfService.generatePDF(serviceInfo);
+
     return await this.mailerService.sendMail({
       to: 'it.support@klaston.com',
       from: 'go8895806@gmail.com',
-      subject: 'Enviando Email com NestJS',
-      html: `teste`,
+      subject: 'Daily report',
+      html: `<p> Olá ${serviceInfo.clientName}, segue o daily report de nossos serviços prestados deste dia</p>`,
       attachments: [
         {
-          filename: 'teste.txt',
-          content: 'aaaa',
+          filename: `${serviceInfo.clientName}.pdf`,
+          contentType: 'application/pdf',
+          content: pdfBuffer,
         },
       ],
     });
-    return 'serviceInfo';
   }
 }
