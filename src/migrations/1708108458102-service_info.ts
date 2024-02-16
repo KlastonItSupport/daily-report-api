@@ -69,30 +69,6 @@ export class ServiceInfo1708108458102 implements MigrationInterface {
             type: 'text',
             isNullable: false,
           },
-          {
-            name: 'client_id',
-            type: 'varchar',
-            isNullable: false,
-          },
-          {
-            name: 'professional_id',
-            type: 'varchar',
-            isNullable: false,
-          },
-        ],
-        foreignKeys: [
-          {
-            name: 'FK_Client',
-            columnNames: ['client_id'],
-            referencedTableName: 'clients', // nome da tabela referenciada
-            referencedColumnNames: ['id'], // nome da coluna referenciada
-          },
-          {
-            name: 'FK_Professional',
-            columnNames: ['professional_id'],
-            referencedTableName: 'professionals', // nome da tabela referenciada
-            referencedColumnNames: ['id'], // nome da coluna referenciada
-          },
         ],
       }),
     );
