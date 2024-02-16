@@ -56,17 +56,17 @@ export class ServicesInfo1707416928449 implements MigrationInterface {
           },
           {
             name: 'executed_service',
-            type: 'varchar',
+            type: 'text',
             isNullable: false,
           },
           {
             name: 'pendencies',
-            type: 'varchar',
+            type: 'text',
             isNullable: false,
           },
           {
             name: 'planning',
-            type: 'varchar',
+            type: 'text',
             isNullable: false,
           },
         ],
