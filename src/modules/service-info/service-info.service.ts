@@ -15,7 +15,6 @@ export class ServiceInfoService {
     private pdfService: PDFService,
   ) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async createServiceInfo(data: CreateServiceInfoDto) {
     const serviceInfo = await this.serviceInfoRepository.create(data);
     await this.serviceInfoRepository.save(serviceInfo);
@@ -34,5 +33,9 @@ export class ServiceInfoService {
         },
       ],
     });
+  }
+
+  async getServiceInfo() {
+    return await this.serviceInfoRepository.find();
   }
 }

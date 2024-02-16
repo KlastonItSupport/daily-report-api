@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CreateServiceInfoDto } from './dtos/create-info.dto';
 import { ServiceInfoService } from './service-info.service';
 
@@ -9,5 +9,10 @@ export class ServiceInfoController {
   @Post()
   async createServiceInfo(@Body() data: CreateServiceInfoDto) {
     return await this.serviceInfoService.createServiceInfo(data);
+  }
+
+  @Get()
+  async getServiceInfo() {
+    return await this.serviceInfoService.getServiceInfo();
   }
 }
