@@ -352,7 +352,7 @@ export class PDFService {
 
     doc.font('Helvetica-Bold').fontSize(9).text(textContent, textX, textY);
     if (shouldSign) {
-      const imagePath = `/home/gustavo/work-klaston/daily-reportt/uploads/signature-${serviceInfo.id}.png`;
+      const imagePath = `${process.env.UPLOAD_FOLDER_PATH}/signature-${serviceInfo.id}.png`;
       const imageX = verticalLine + 20;
       const imageY = squareY;
       const imageWidth = 150;
