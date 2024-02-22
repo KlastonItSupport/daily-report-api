@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class UsersTable1708090809417 implements MigrationInterface {
-  private TABLE_NAME = 'users';
+export class Reports1708112096483 implements MigrationInterface {
+  private TABLE_NAME = 'reports';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
@@ -14,10 +14,9 @@ export class UsersTable1708090809417 implements MigrationInterface {
             default: 'CURRENT_TIMESTAMP',
           },
           { name: 'id', type: 'varchar', isPrimary: true },
-          { name: 'name', type: 'varchar' },
-          { name: 'email', type: 'varchar' },
-          { name: 'password_hash', type: 'varchar' },
-          { name: 'permission', type: 'varchar' },
+          { name: 'professional_email', type: 'varchar' },
+          { name: 'company_name', type: 'varchar' },
+          { name: 'was_sent', type: 'boolean', default: false },
         ],
       }),
     );

@@ -6,7 +6,6 @@ import {
   fourthThird,
   secondThird,
 } from 'src/helpers/pdf/first-part-pdf';
-import { CreateServiceInfoDto } from './dtos/create-info.dto';
 import { firstLine, secondLine } from 'src/helpers/pdf/second-part-pdf';
 import {
   drawActivity,
@@ -14,12 +13,23 @@ import {
   drawConsulting,
   drawTraining,
 } from 'src/helpers/pdf/third-part-pdf';
+import { ServiceInfoEntity } from './entities/service_info.entity';
+import { ServiceInfoService } from './service-info.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PDFService {
-  constructor() {}
+  constructor(
+    @InjectRepository(ServiceInfoEntity)
+    private readonly serviceInfoRepository: Repository<ServiceInfoEntity>,
+  ) {}
 
-  async generatePDF(serviceInfo: CreateServiceInfoDto): Promise<Buffer> {
+  async generatePDF(
+    serviceInfo: ServiceInfoEntity,
+    shouldSign: boolean,
+    sensitiveInfo = null,
+  ): Promise<Buffer> {
     const pdfBuffer: Buffer = await new Promise((resolve) => {
       const doc = new PDFDocument({
         size: 'A4',
@@ -30,6 +40,7 @@ export class PDFService {
       this.drawSecondPart(doc, serviceInfo);
       this.drawThirdPart(doc, serviceInfo);
       this.drawFourthPart(doc, serviceInfo);
+      this.signDocument(doc, serviceInfo, shouldSign, sensitiveInfo);
 
       doc.end();
 
@@ -97,7 +108,7 @@ export class PDFService {
 
   async drawSecondPart(
     doc: PDFKit.PDFDocument,
-    serviceInfo: CreateServiceInfoDto,
+    serviceInfo: ServiceInfoEntity,
   ) {
     const squareWidth = 515;
     const squareHeight = 50;
@@ -126,7 +137,7 @@ export class PDFService {
       verticalLine,
       squareHeight,
       serviceInfo.clientName,
-      serviceInfo.startDate.toString(),
+      serviceInfo.serviceDate.toString(),
     );
 
     secondLine(
@@ -138,10 +149,7 @@ export class PDFService {
       serviceInfo.endDate.toString(),
     );
   }
-  async drawThirdPart(
-    doc: PDFKit.PDFDocument,
-    serviceInfo: CreateServiceInfoDto,
-  ) {
+  async drawThirdPart(doc: PDFKit.PDFDocument, serviceInfo: ServiceInfoEntity) {
     const squareWidth = 515;
     const squareHeight = 25;
     const squareX = 40;
@@ -187,7 +195,7 @@ export class PDFService {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  drawFourthPart(doc: PDFKit.PDFDocument, serviceInfo: CreateServiceInfoDto) {
+  drawFourthPart(doc: PDFKit.PDFDocument, serviceInfo: ServiceInfoEntity) {
     const squareWidth = 515;
     const squareHeight = 450;
     const squareX = 40;
@@ -314,5 +322,105 @@ export class PDFService {
           lineGap: 3,
         },
       );
+  }
+
+  // ...
+
+  async signDocument(
+    doc: PDFKit.PDFDocument,
+    serviceInfo: ServiceInfoEntity,
+    shouldSign: boolean,
+    sensitiveInfo = null,
+  ) {
+    const squareWidth = 515;
+    const squareHeight = 30;
+    const squareX = 40;
+    const squareY = 753;
+
+    this.drawBigSquare(doc, squareX, squareY, squareWidth, squareHeight);
+
+    const verticalLine = squareX + squareWidth * 0.42;
+
+    doc
+      .moveTo(verticalLine, squareY)
+      .lineTo(verticalLine, squareY + squareHeight)
+      .stroke();
+
+    const textContent = "Customer's signature / Assinatura do Cliente";
+    const textX = squareX + 10;
+    const textY = squareY + 4;
+
+    doc.font('Helvetica-Bold').fontSize(9).text(textContent, textX, textY);
+    if (shouldSign) {
+      const imagePath = `/home/gustavo/work-klaston/daily-reportt/uploads/signature-${serviceInfo.id}.png`;
+      const imageX = verticalLine + 20;
+      const imageY = squareY;
+      const imageWidth = 150;
+      const imageHeight = 27;
+
+      doc.image(imagePath, imageX, imageY, {
+        width: imageWidth,
+        height: imageHeight,
+      });
+
+      if (sensitiveInfo) {
+        const textSensitiveInfo = 'Informações sensíveis';
+        const textSensitiveInfoTextX = squareX + 10;
+        const textSensitiveInfoTextY = squareY + 20;
+
+        doc
+          .font('Helvetica-Bold')
+          .fontSize(14)
+          .text(
+            textSensitiveInfo,
+            textSensitiveInfoTextX,
+            textSensitiveInfoTextY,
+          );
+
+        const userAgentText = 'User Agent:';
+        const userAgentTextX = squareX + 10;
+        const userAgentTextY = squareY - 650;
+
+        doc
+          .font('Helvetica-Bold')
+          .fontSize(10)
+          .text(userAgentText, userAgentTextX, userAgentTextY);
+
+        const userAgentDescription = sensitiveInfo.userAgent;
+        const userAgentDescriptionX = squareX + 80;
+        const userAgentDescriptionY = squareY - 650;
+
+        doc
+          .font('Helvetica')
+          .fontSize(10)
+          .text(
+            userAgentDescription,
+            userAgentDescriptionX,
+            userAgentDescriptionY,
+          );
+
+        // --- IP ---
+        const ipText = 'Ip:';
+        const ipTextX = squareX + 10;
+        const ipTextY = squareY - 600;
+
+        doc.font('Helvetica-Bold').fontSize(10).text(ipText, ipTextX, ipTextY);
+
+        const ipDescription = sensitiveInfo.ipAddress;
+        const ipDescriptionX = squareX + 80;
+        const ipDescriptionY = squareY - 600;
+
+        doc
+          .font('Helvetica')
+          .fontSize(10)
+          .text(ipDescription, ipDescriptionX, ipDescriptionY);
+      }
+      const serviceInfoClient = await this.serviceInfoRepository.findOne({
+        where: { id: serviceInfo.id },
+      });
+
+      serviceInfoClient.isSigned = true;
+      await this.serviceInfoRepository.save(serviceInfoClient);
+    }
   }
 }

@@ -22,6 +22,9 @@ export class User {
   @Column({ name: 'password_hash' })
   passwordHash: string;
 
+  @Column({ name: 'permission' })
+  permission: string;
+
   constructor(user: Partial<User>) {
     this.id = user?.id;
     this.createdAt = user?.createdAt;

@@ -1,3 +1,5 @@
+import { convertingDate } from '../format';
+
 export const firstLine = (
   doc: PDFKit.PDFDocument,
   squareY: number,
@@ -40,7 +42,7 @@ export const firstLine = (
     .lineTo(verticalLine, squareY + squareHeight)
     .stroke();
 
-  const dateTextValue = startDate;
+  const dateTextValue = convertingDate(startDate);
   const dateTextValueX = 357;
   const dateTextValueY = squareY + 10;
 

@@ -32,20 +32,19 @@ export class CreateServiceInfoDto {
   clientEmail: string;
 
   @IsNotEmpty()
-  @IsDate()
-  startDate: Date;
+  startDate: string;
 
   @IsNotEmpty()
   @IsDate()
-  endDate: Date;
+  endDate: string;
+
+  @IsNotEmpty()
+  @IsDate()
+  serviceDate: string;
 
   @IsOptional()
   @IsInt()
   serviceType?: number;
-
-  @IsNotEmpty()
-  @IsDecimal()
-  servicePrice: string;
 
   @IsNotEmpty()
   @IsString()
@@ -66,4 +65,7 @@ export class CreateServiceInfoDto {
   @IsNotEmpty()
   @IsString()
   professionalId: string;
+
+  @IsNotEmpty()
+  reportId: string;
 }

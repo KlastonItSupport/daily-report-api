@@ -25,16 +25,16 @@ export class ServiceInfoEntity {
   clientEmail: string;
 
   @Column({ name: 'start_date', type: 'date' })
-  startDate: Date;
+  startDate: string;
 
   @Column({ name: 'end_date', type: 'date' })
-  endDate: Date;
+  endDate: string;
+
+  @Column({ name: 'service_date', type: 'date' })
+  serviceDate: string;
 
   @Column({ name: 'service_type', type: 'tinyint', nullable: true })
   serviceType: number;
-
-  @Column({ name: 'service_price', type: 'varchar' })
-  servicePrice: string;
 
   @Column({ name: 'executed_service', type: 'varchar' })
   executedService: string;
@@ -44,4 +44,7 @@ export class ServiceInfoEntity {
 
   @Column({ name: 'planning', type: 'varchar' })
   planning: string;
+
+  @Column({ name: 'is_signed', type: 'boolean' })
+  isSigned: boolean;
 }

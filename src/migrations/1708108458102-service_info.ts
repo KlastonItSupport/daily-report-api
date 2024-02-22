@@ -36,11 +36,16 @@ export class ServiceInfo1708108458102 implements MigrationInterface {
           },
           {
             name: 'start_date',
-            type: 'date',
+            type: 'varchar',
             isNullable: false,
           },
           {
             name: 'end_date',
+            type: 'varchar',
+            isNullable: false,
+          },
+          {
+            name: 'service_date',
             type: 'date',
             isNullable: false,
           },
@@ -49,11 +54,7 @@ export class ServiceInfo1708108458102 implements MigrationInterface {
             type: 'tinyint',
             isNullable: true,
           },
-          {
-            name: 'service_price',
-            type: 'varchar',
-            isNullable: false,
-          },
+
           {
             name: 'executed_service',
             type: 'text',
@@ -68,6 +69,12 @@ export class ServiceInfo1708108458102 implements MigrationInterface {
             name: 'planning',
             type: 'text',
             isNullable: false,
+          },
+          {
+            name: 'is_signed',
+            type: 'boolean',
+            isNullable: false,
+            default: false,
           },
         ],
       }),
