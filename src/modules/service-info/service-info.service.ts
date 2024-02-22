@@ -37,7 +37,7 @@ export class ServiceInfoService {
 
     const response = await this.mailerService.sendMail({
       to: data.clientEmail,
-      from: 'go8895806@gmail.com',
+      from: process.env.EMAIL_USER,
       subject: 'Daily report',
       html: `<p> Olá ${serviceInfo.clientName}, segue o daily report de nossos serviços prestados deste dia. Acesse o <a href='${linkToSign}'>link</a> para assinar o documento</p>`,
       attachments: [
@@ -111,7 +111,7 @@ export class ServiceInfoService {
 
     await this.mailerService.sendMail({
       to: serviceInfo.clientEmail,
-      from: 'go8895806@gmail.com',
+      from: process.env.EMAIL_USER,
       subject: 'Daily report',
       html: `<p> Olá ${serviceInfo.clientName}, segue o documento do daily report assinado para seu controle.</p>`,
       attachments: [
@@ -122,33 +122,33 @@ export class ServiceInfoService {
         },
       ],
     });
-    // await this.mailerService.sendMail({
-    //   to: serviceInfo.clientEmail,
-    //   from: 'go8895806@gmail.com',
-    //   subject: 'Daily report',
-    //   html: `<p> Olá ${serviceInfo.professionalName}, segue o documento do daily report assinado pela empresa para seu controle.</p>`,
-    //   attachments: [
-    //     {
-    //       filename: `${serviceInfo.clientName}.pdf`,
-    //       contentType: 'application/pdf',
-    //       content: pdfBuffer,
-    //     },
-    //   ],
-    // });
+    await this.mailerService.sendMail({
+      to: serviceInfo.professionalEmail,
+      from: process.env.EMAIL_USER,
+      subject: 'Daily report',
+      html: `<p> Olá ${serviceInfo.professionalName}, segue o documento do daily report assinado pela empresa para seu controle.</p>`,
+      attachments: [
+        {
+          filename: `${serviceInfo.clientName}.pdf`,
+          contentType: 'application/pdf',
+          content: pdfBuffer,
+        },
+      ],
+    });
 
-    // await this.mailerService.sendMail({
-    //   to: serviceInfo.clientEmail,
-    //   from: 'go8895806@gmail.com',
-    //   subject: ` Daily report - Assinado - ${serviceInfo.clientName}`,
-    //   html: `<p> Olá ${serviceInfo.professionalName}, segue o documento do daily report assinado pela empresa para seu controle.</p>`,
-    //   attachments: [
-    //     {
-    //       filename: `${serviceInfo.clientName}.pdf`,
-    //       contentType: 'application/pdf',
-    //       content: pdfBuffer,
-    //     },
-    //   ],
-    // });
+    await this.mailerService.sendMail({
+      to: ['natacha.partner@klaston.com', 'tamara@klaston.com'],
+      from: process.env.EMAIL_USER,
+      subject: ` Daily report - Assinado - ${serviceInfo.clientName}`,
+      html: `<p> Olá ${serviceInfo.professionalName}, segue o documento do daily report assinado pela empresa para seu controle.</p>`,
+      attachments: [
+        {
+          filename: `${serviceInfo.clientName}.pdf`,
+          contentType: 'application/pdf',
+          content: pdfBuffer,
+        },
+      ],
+    });
 
     await this.fileService.deleteFile(data.reportId);
     return {
