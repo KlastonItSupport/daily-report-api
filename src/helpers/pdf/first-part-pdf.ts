@@ -1,55 +1,19 @@
 import * as path from 'path';
 
-export const firstThird = (
-  doc: PDFKit.PDFDocument,
-  firstThirdCenterX: number,
-  firstThirdStartY: number,
-  firstThirdEndY: number,
-) => {
-  doc
-    .moveTo(firstThirdCenterX, firstThirdStartY)
-    .lineTo(firstThirdCenterX, firstThirdEndY)
-    .stroke();
-
+export const firstThird = (doc: PDFKit.PDFDocument) => {
   const imagePath = path.resolve(__dirname, '../../../klastonblue.png');
 
-  doc.image(imagePath, 50, 115, {
+  doc.image(imagePath, 45, 80, {
     width: 120,
     height: 40,
   });
 };
 
-export const secondThird = (
-  doc: PDFKit.PDFDocument,
-  squareY: number,
-  squareX: number,
-  squareHeight: number,
-  squareWidth: number,
-) => {
-  const secondThirdCenterX = 400;
-  const secondThirdStartY = squareY;
-  const secondThirdEndY = squareY + squareHeight;
-
-  doc
-    .moveTo(secondThirdCenterX, secondThirdStartY)
-    .lineTo(secondThirdCenterX, secondThirdEndY)
-    .stroke();
-
+export const secondThird = (doc: PDFKit.PDFDocument) => {
   // Desenha uma linha horizontal
   const horizontalLineY = 95;
-  doc
-    .moveTo(180, horizontalLineY)
-    .lineTo(squareX + squareWidth, horizontalLineY)
-    .stroke();
 
   // Adiciona um texto um pouco acima da linha horizontal
-  const textAboveLine = 'Título do documento/Document Title';
-  const textX = 70;
-  const textY = horizontalLineY - 15;
-
-  doc.font('Helvetica-Oblique');
-  doc.fontSize(10).text(textAboveLine, textX, textY, { align: 'center' });
-  doc.font('Helvetica-Bold');
 
   const textTitle = 'RELATÓRIO DIÁRIO ';
   const textTitleX = 70;
@@ -75,15 +39,6 @@ export const ThirdThird = (
   squareHeight: number,
   squareWidth: number,
 ) => {
-  const thirdVerticalLineX = 500;
-  const thirdVerticalStartY = squareY;
-  const thirdVerticalEndY = squareY + squareHeight;
-
-  doc
-    .moveTo(thirdVerticalLineX, thirdVerticalStartY)
-    .lineTo(thirdVerticalLineX, thirdVerticalEndY)
-    .stroke();
-
   const thirdhorizontalLineY = 95;
   doc
     .moveTo(180, thirdhorizontalLineY)

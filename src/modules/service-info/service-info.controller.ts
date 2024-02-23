@@ -1,11 +1,6 @@
 import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
-import {
-  CreateServiceInfoDto,
-  CreateReportDto,
-  SignReportDto,
-} from './dtos/dto';
+import { CreateServiceInfoDto, SignReportDto } from './dtos/dto';
 import { ServiceInfoService } from './service-info.service';
-import {} from './dtos/sign-report.dto';
 import { Request } from 'express';
 
 @Controller('service-info')
@@ -14,23 +9,12 @@ export class ServiceInfoController {
 
   @Post()
   async createServiceInfo(@Body() data: CreateServiceInfoDto) {
-    await this.serviceInfoService.canSend(data.reportId);
     return await this.serviceInfoService.createServiceInfo(data);
   }
 
   @Get(':id')
   async getServiceInfo(@Param() param) {
     return await this.serviceInfoService.getServiceInfo(param.id);
-  }
-
-  @Post('report')
-  async createReport(@Body() data: CreateReportDto) {
-    return this.serviceInfoService.createReport(data);
-  }
-
-  @Get('report/:id')
-  async canSend(@Param() param) {
-    return this.serviceInfoService.canSend(param.id);
   }
 
   @Post('sign')

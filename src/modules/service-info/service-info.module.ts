@@ -6,14 +6,13 @@ import { ConfigModule } from '@nestjs/config';
 import { ServiceInfoController } from './service-info.controller';
 import { ServiceInfoService } from './service-info.service';
 import { PDFService } from './pdfs.service';
-import { ReportEntity } from './entities/report.entity';
 import { FileService } from './files.service';
 import { User } from '../users/entities/user.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    TypeOrmModule.forFeature([ServiceInfoEntity, ReportEntity, User]),
+    TypeOrmModule.forFeature([ServiceInfoEntity, User]),
     MailerModule.forRoot({
       transport: {
         host: 'smtp.gmail.com',

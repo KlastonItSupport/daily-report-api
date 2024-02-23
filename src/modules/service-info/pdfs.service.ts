@@ -1,11 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as PDFDocument from 'pdfkit';
-import {
-  ThirdThird,
-  firstThird,
-  fourthThird,
-  secondThird,
-} from 'src/helpers/pdf/first-part-pdf';
+import { firstThird, secondThird } from 'src/helpers/pdf/first-part-pdf';
 import { firstLine, secondLine } from 'src/helpers/pdf/second-part-pdf';
 import {
   drawActivity,
@@ -14,7 +9,6 @@ import {
   drawTraining,
 } from 'src/helpers/pdf/third-part-pdf';
 import { ServiceInfoEntity } from './entities/service_info.entity';
-import { ServiceInfoService } from './service-info.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -86,24 +80,9 @@ export class PDFService {
     this.drawBigSquare(doc, squareX, squareY, squareWidth, squareHeight);
 
     // Primeiro terço do quadrado
-    const firstThirdCenterX = 180;
-    const firstThirdStartY = squareY;
-    const firstThirdEndY = squareY + squareHeight;
-
-    firstThird(doc, firstThirdCenterX, firstThirdStartY, firstThirdEndY);
-    doc
-      .moveTo(firstThirdCenterX, firstThirdStartY)
-      .lineTo(firstThirdCenterX, firstThirdEndY)
-      .stroke();
-
+    firstThird(doc);
     // --- Segundo terço do quadrado ---
-    secondThird(doc, squareY, squareX, squareHeight, squareWidth);
-
-    // --- Terceiro terço do quadrado ---
-    ThirdThird(doc, squareY, squareX, squareHeight, squareWidth);
-
-    // --- Quarto terço do quadrado ---
-    fourthThird(doc);
+    secondThird(doc);
   }
 
   async drawSecondPart(

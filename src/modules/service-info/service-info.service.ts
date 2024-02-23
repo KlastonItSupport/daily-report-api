@@ -3,13 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ServiceInfoEntity } from './entities/service_info.entity';
-import {
-  CreateServiceInfoDto,
-  CreateReportDto,
-  SignReportDto,
-} from './dtos/dto';
+import { CreateServiceInfoDto, SignReportDto } from './dtos/dto';
 import { PDFService } from './pdfs.service';
-import { ReportEntity } from './entities/report.entity';
 import { AppError } from 'src/errors/app-error';
 import { FileService } from './files.service';
 import { User } from '../users/entities/user.entity';
@@ -21,8 +16,6 @@ export class ServiceInfoService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(ServiceInfoEntity)
     private readonly serviceInfoRepository: Repository<ServiceInfoEntity>,
-    @InjectRepository(ReportEntity)
-    private readonly reportRepository: Repository<ReportEntity>,
     private mailerService: MailerService,
     private pdfService: PDFService,
     private readonly fileService: FileService,
@@ -39,7 +32,9 @@ export class ServiceInfoService {
       to: data.clientEmail,
       from: process.env.EMAIL_USER,
       subject: 'Daily report',
-      html: `<p> Olá ${serviceInfo.clientName}, segue o daily report de nossos serviços prestados deste dia. Acesse o <a href='${linkToSign}'>link</a> para assinar o documento</p>`,
+      html: `<p> Olá, ${serviceInfo.clientName}.</p></br> 
+      <p>Segue o daily report de nossos serviços prestados deste dia.</p></br>
+      <a href="${linkToSign}">Clique aqui</a> para assinar o documento`,
       attachments: [
         {
           filename: `${serviceInfo.clientName}.pdf`,
@@ -48,13 +43,6 @@ export class ServiceInfoService {
         },
       ],
     });
-
-    const report = await this.reportRepository.findOne({
-      where: { id: data.reportId },
-    });
-
-    report.wasSent = true;
-    await this.reportRepository.save(report);
 
     return response;
   }
@@ -68,29 +56,6 @@ export class ServiceInfoService {
       });
     }
     return await this.serviceInfoRepository.find();
-  }
-
-  async createReport(data: CreateReportDto) {
-    const report = await this.reportRepository.create(data);
-    const savedReport = await this.reportRepository.save(report);
-    return {
-      ...savedReport,
-      link: `${process.env.FRONT_LINK}/create/report/${report.id}`,
-    };
-  }
-
-  async canSend(id: string) {
-    const report = await this.reportRepository.findOne({
-      where: { id: id },
-    });
-
-    if (report) {
-      if (report.wasSent == true) {
-        throw new AppError('This report cant be send again', 401);
-      }
-      return { canSend: !report.wasSent };
-    }
-    throw new AppError('This report cant be send', 401);
   }
 
   async signReport(data: SignReportDto, sensitiveInformation) {
@@ -137,7 +102,8 @@ export class ServiceInfoService {
     });
 
     await this.mailerService.sendMail({
-      to: ['natacha.partner@klaston.com', 'tamara@klaston.com'],
+      to: ['it.support@klaston.com'],
+      // to: ['natacha.partner@klaston.com', 'tamara@klaston.com'],
       from: process.env.EMAIL_USER,
       subject: ` Daily report - Assinado - ${serviceInfo.clientName}`,
       html: `<p> Olá ${serviceInfo.professionalName}, segue o documento do daily report assinado pela empresa para seu controle.</p>`,
