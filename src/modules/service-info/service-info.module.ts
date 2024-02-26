@@ -15,7 +15,7 @@ import { User } from '../users/entities/user.entity';
     TypeOrmModule.forFeature([ServiceInfoEntity, User]),
     MailerModule.forRoot({
       transport: {
-        host: 'smtp.gmail.com',
+        host: 'smtp.hostinger.com',
         secure: true,
         port: 465,
         auth: {
@@ -40,6 +40,5 @@ export class ServiceInfoModule implements NestModule {
         console.log('IP Address:', req.ip);
         next();
       })
-      .forRoutes('sign'); // Especificando a rota '/sign'
-  }
+      .forRoutes('sign');
 }

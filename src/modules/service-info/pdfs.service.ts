@@ -209,7 +209,7 @@ export class PDFService {
 
     doc
       .font('Helvetica')
-      .fontSize(10)
+      .fontSize(9)
       .text(
         textSquareBelowJobDone,
         textSquareBelowJobDoneX,
@@ -217,7 +217,7 @@ export class PDFService {
         {
           width: squareWidth - 20,
           align: 'left',
-          lineGap: 3,
+          lineGap: 0.1,
         },
       );
 
@@ -253,7 +253,7 @@ export class PDFService {
 
     doc
       .font('Helvetica')
-      .fontSize(10)
+      .fontSize(8)
       .text(
         textSquareBelowPendencies,
         textSquareBelowPendenciesX,
@@ -261,7 +261,7 @@ export class PDFService {
         {
           width: squareWidth - 20,
           align: 'left',
-          lineGap: 3,
+          lineGap: 0.1,
         },
       );
 
@@ -278,7 +278,7 @@ export class PDFService {
 
     doc
       .font('Helvetica-Bold')
-      .fontSize(10)
+      .fontSize(9)
       .text(textPlanning, textPlanningX, textPlanningY, {
         width: squareWidth,
         lineGap: 3,
@@ -290,7 +290,7 @@ export class PDFService {
 
     doc
       .font('Helvetica')
-      .fontSize(10)
+      .fontSize(8)
       .text(
         textSquareBelowPlanning,
         textSquareBelowPlanningX,
@@ -298,7 +298,7 @@ export class PDFService {
         {
           width: squareWidth - 20,
           align: 'left',
-          lineGap: 3,
+          lineGap: 0.1,
         },
       );
   }
