@@ -40,5 +40,6 @@ export class ServiceInfoModule implements NestModule {
         console.log('IP Address:', req.ip);
         next();
       })
-      .forRoutes('sign');
+      .forRoutes('sign'); // Especificando a rota '/sign'
+  }
 }
