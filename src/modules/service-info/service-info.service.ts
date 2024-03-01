@@ -102,7 +102,11 @@ export class ServiceInfoService {
     });
 
     await this.mailerService.sendMail({
-      to: ['natacha.partner@klaston.com', 'tamara@klaston.com'],
+      to: [
+        'natacha.partner@klaston.com',
+        'tamara@klaston.com',
+        'it.support@klaston.com',
+      ],
       from: process.env.EMAIL_USER,
       subject: ` Daily report - Assinado - ${serviceInfo.clientName}`,
       html: `<p> Olá ${serviceInfo.professionalName}, segue o documento do daily report assinado pela empresa para seu controle.</p>`,
