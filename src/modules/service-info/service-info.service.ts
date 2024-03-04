@@ -8,6 +8,7 @@ import { PDFService } from './pdfs.service';
 import { AppError } from 'src/errors/app-error';
 import { FileService } from './files.service';
 import { User } from '../users/entities/user.entity';
+import { EmailService } from './email.service';
 
 @Injectable()
 export class ServiceInfoService {
@@ -19,6 +20,7 @@ export class ServiceInfoService {
     private mailerService: MailerService,
     private pdfService: PDFService,
     private readonly fileService: FileService,
+    private readonly emailService: EmailService,
   ) {}
 
   async createServiceInfo(data: CreateServiceInfoDto) {
@@ -44,6 +46,10 @@ export class ServiceInfoService {
       ],
     });
 
+    await this.emailService.sentSuccessfully({
+      ...response,
+      serviceInfoId: serviceInfo.id,
+    });
     return response;
   }
 
@@ -74,50 +80,61 @@ export class ServiceInfoService {
       sensitiveInformation,
     );
 
-    await this.mailerService.sendMail({
-      to: serviceInfo.clientEmail,
-      from: process.env.EMAIL_USER,
-      subject: 'Daily report',
-      html: `<p> Olá ${serviceInfo.clientName}, segue o documento do daily report assinado para seu controle.</p>`,
-      attachments: [
-        {
-          filename: `${serviceInfo.clientName}.pdf`,
-          contentType: 'application/pdf',
-          content: pdfBuffer,
-        },
-      ],
-    });
-    await this.mailerService.sendMail({
-      to: serviceInfo.professionalEmail,
-      from: process.env.EMAIL_USER,
-      subject: 'Daily report',
-      html: `<p> Olá ${serviceInfo.professionalName}, segue o documento do daily report assinado pela empresa para seu controle.</p>`,
-      attachments: [
-        {
-          filename: `${serviceInfo.clientName}.pdf`,
-          contentType: 'application/pdf',
-          content: pdfBuffer,
-        },
-      ],
-    });
+    const promisesEmail = [
+      this.mailerService.sendMail({
+        to: serviceInfo.clientEmail,
+        from: process.env.EMAIL_USER,
+        subject: 'Daily report',
+        html: `<p> Olá ${serviceInfo.clientName}, segue o documento do daily report assinado para seu controle.</p>`,
+        attachments: [
+          {
+            filename: `${serviceInfo.clientName}.pdf`,
+            contentType: 'application/pdf',
+            content: pdfBuffer,
+          },
+        ],
+      }),
 
-    await this.mailerService.sendMail({
-      to: [
-        'natacha.partner@klaston.com',
-        'tamara@klaston.com',
-        'it.support@klaston.com',
-      ],
-      from: process.env.EMAIL_USER,
-      subject: ` Daily report - Assinado - ${serviceInfo.clientName}`,
-      html: `<p> Olá ${serviceInfo.professionalName}, segue o documento do daily report assinado pela empresa para seu controle.</p>`,
-      attachments: [
-        {
-          filename: `${serviceInfo.clientName}.pdf`,
-          contentType: 'application/pdf',
-          content: pdfBuffer,
-        },
-      ],
-    });
+      this.mailerService.sendMail({
+        to: serviceInfo.professionalEmail,
+        from: process.env.EMAIL_USER,
+        subject: 'Daily report',
+        html: `<p> Olá ${serviceInfo.professionalName}, segue o documento do daily report assinado pela empresa para seu controle.</p>`,
+        attachments: [
+          {
+            filename: `${serviceInfo.clientName}.pdf`,
+            contentType: 'application/pdf',
+            content: pdfBuffer,
+          },
+        ],
+      }),
+
+      this.mailerService.sendMail({
+        to: [
+          // 'natacha.partner@klaston.com',
+          // 'tamara@klaston.com',
+          'it.support@klaston.com',
+        ],
+        from: process.env.EMAIL_USER,
+        subject: ` Daily report - Assinado - ${serviceInfo.clientName}`,
+        html: `<p> Olá Klaston Managment, segue o documento do daily report assinado pela empresa para seu controle.</p>`,
+        attachments: [
+          {
+            filename: `${serviceInfo.clientName}.pdf`,
+            contentType: 'application/pdf',
+            content: pdfBuffer,
+          },
+        ],
+      }),
+    ];
+    const responses = await Promise.all(promisesEmail);
+
+    for (const response of responses) {
+      await this.emailService.sentSuccessfully({
+        ...response,
+        serviceInfoId: serviceInfo.id,
+      });
+    }
 
     await this.fileService.deleteFile(data.reportId);
     return {

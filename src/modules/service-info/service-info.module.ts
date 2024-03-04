@@ -8,11 +8,13 @@ import { ServiceInfoService } from './service-info.service';
 import { PDFService } from './pdfs.service';
 import { FileService } from './files.service';
 import { User } from '../users/entities/user.entity';
+import { EmailService } from './email.service';
+import { EmailLogsEntity } from './entities/email_logs.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    TypeOrmModule.forFeature([ServiceInfoEntity, User]),
+    TypeOrmModule.forFeature([ServiceInfoEntity, User, EmailLogsEntity]),
     MailerModule.forRoot({
       transport: {
         host: 'smtp.hostinger.com',
@@ -30,7 +32,7 @@ import { User } from '../users/entities/user.entity';
     }),
   ],
   controllers: [ServiceInfoController],
-  providers: [ServiceInfoService, PDFService, FileService],
+  providers: [ServiceInfoService, PDFService, FileService, EmailService],
 })
 export class ServiceInfoModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

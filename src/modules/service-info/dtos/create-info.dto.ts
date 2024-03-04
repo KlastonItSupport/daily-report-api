@@ -8,7 +8,6 @@ import {
   IsDate,
   IsOptional,
   IsInt,
-  IsDecimal,
 } from 'class-validator';
 
 export class CreateServiceInfoDto {
