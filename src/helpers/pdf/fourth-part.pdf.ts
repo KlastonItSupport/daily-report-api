@@ -67,10 +67,11 @@ const drawJobDone = (
     align: 'left',
   };
   doc.fontSize(textJobDoneDescription.length > 1500 ? 7 : 8);
-  const textJobDoneHeight = doc.heightOfString(
-    textJobDoneDescription,
-    textJobDoneDescriptionOptions,
-  );
+  const textJobDoneHeight =
+    doc.heightOfString(textJobDoneDescription, textJobDoneDescriptionOptions) +
+    10;
+
+  const finalTextHeight = textJobDoneHeight > 225 ? textJobDoneHeight : 225;
 
   doc
     .font('Helvetica')
@@ -81,10 +82,9 @@ const drawJobDone = (
       textJobDoneDescriptionOptions,
     );
 
-  drawBigSquare(doc, squareX, textY + 10, squareWidth, textJobDoneHeight + 10);
+  drawBigSquare(doc, squareX, textY + 10, squareWidth, finalTextHeight);
 
-  // Retornar a posição final vertical do texto "Serviço executado"
-  return textY + textJobDoneHeight + 10;
+  return textY + finalTextHeight;
 };
 
 const drawPendencies = (
@@ -113,22 +113,17 @@ const drawPendencies = (
     align: 'left',
   };
   doc.fontSize(textPendencies.length > 1500 ? 7 : 8);
-  const textPendenciesHeight = doc.heightOfString(
-    textPendencies,
-    textPendenciesOptions,
-  );
+  const textPendenciesHeight =
+    doc.heightOfString(textPendencies, textPendenciesOptions) + 10;
+
+  const finalTextHeight =
+    textPendenciesHeight > 225 ? textPendenciesHeight : 225;
 
   doc
     .font('Helvetica')
     .text(textPendencies, squareX + 10, textY + 20, textPendenciesOptions);
 
-  drawBigSquare(
-    doc,
-    squareX,
-    textY + 10,
-    squareWidth,
-    textPendenciesHeight + 10,
-  );
+  drawBigSquare(doc, squareX, textY + 10, squareWidth, finalTextHeight);
 };
 
 const drawPlanning = (
@@ -160,6 +155,8 @@ const drawPlanning = (
     textPlanningDescriptionOptions,
   );
 
+  const finalTextHeight = textPlanningHeight > 225 ? textPlanningHeight : 225;
+
   doc
     .font('Helvetica')
     .fontSize(9)
@@ -175,10 +172,10 @@ const drawPlanning = (
     squareX,
     textPlanningY + 16,
     squareWidth,
-    textPlanningHeight + 10,
+    finalTextHeight + 10,
   );
 
-  return textPlanningHeight;
+  return finalTextHeight;
 };
 
 const signDocument = async (
