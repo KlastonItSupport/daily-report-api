@@ -111,8 +111,8 @@ export class ServiceInfoService {
 
       this.mailerService.sendMail({
         to: [
-          // 'natacha.partner@klaston.com',
-          // 'tamara@klaston.com',
+          'natacha.partner@klaston.com',
+          'tamara@klaston.com',
           'it.support@klaston.com',
         ],
         from: process.env.EMAIL_USER,
