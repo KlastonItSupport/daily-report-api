@@ -30,27 +30,53 @@ export class ServiceInfoService {
 
     const linkToSign = `${process.env.FRONT_LINK}/sign/document/${serviceInfo.id}`;
 
-    const response = await this.mailerService.sendMail({
-      to: data.clientEmail,
-      from: process.env.EMAIL_USER,
-      subject: 'Daily report',
-      html: `<p> Olá, ${serviceInfo.clientName}.</p></br> 
-      <p>Segue o daily report de nossos serviços prestados deste dia.</p></br>
-      <a href="${linkToSign}">Clique aqui</a> para assinar o documento`,
-      attachments: [
-        {
-          filename: `${serviceInfo.clientName}.pdf`,
-          contentType: 'application/pdf',
-          content: pdfBuffer,
-        },
-      ],
-    });
+    const promises = [
+      this.mailerService.sendMail({
+        to: data.clientEmail,
+        from: process.env.EMAIL_USER,
+        subject: 'Daily report',
+        html: `<p> Olá, ${serviceInfo.clientName}.</p></br> 
+       <p>Segue o daily report de nossos serviços prestados deste dia.</p></br>
+       <a href="${linkToSign}">Clique aqui</a> para assinar o documento`,
+        attachments: [
+          {
+            filename: `${serviceInfo.clientName}.pdf`,
+            contentType: 'application/pdf',
+            content: pdfBuffer,
+          },
+        ],
+      }),
 
-    await this.emailService.sentSuccessfully({
-      ...response,
-      serviceInfoId: serviceInfo.id,
-    });
-    return response;
+      await this.mailerService.sendMail({
+        to: [
+          'natacha.partner@klaston.com',
+          'tamara@klaston.com',
+          'it.support@klaston.com',
+        ],
+        from: process.env.EMAIL_USER,
+        subject: 'Daily report - Gerado pelo prof.',
+        html: `<p> Olá, o colaborador ${serviceInfo.professionalName} acabou de gerar um daily report para a empresa ${serviceInfo.clientName} que está pronto para assinatura do cliente.</p></br>
+       `,
+        attachments: [
+          {
+            filename: `${serviceInfo.clientName}.pdf`,
+            contentType: 'application/pdf',
+            content: pdfBuffer,
+          },
+        ],
+      }),
+    ];
+
+    const responses = await Promise.all(promises);
+
+    for (const response of responses) {
+      await this.emailService.sentSuccessfully({
+        ...response,
+        serviceInfoId: serviceInfo.id,
+      });
+    }
+
+    return responses;
   }
 
   async getServiceInfo(id: string) {
