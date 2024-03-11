@@ -48,11 +48,14 @@ export class ServiceInfoService {
       }),
 
       await this.mailerService.sendMail({
-        to: [
-          'natacha.partner@klaston.com',
-          'tamara@klaston.com',
-          'it.support@klaston.com',
-        ],
+        to:
+          process.env.ENVIRONMENT == 'TEST'
+            ? ['it.support@klaston.com']
+            : [
+                'it.support@klaston.com',
+                'natacha.partner@klaston.com',
+                'tamara@klaston.com',
+              ],
         from: process.env.EMAIL_USER,
         subject: 'Daily report - Gerado pelo prof.',
         html: `<p> Olá, o colaborador ${serviceInfo.professionalName} acabou de gerar um daily report para a empresa ${serviceInfo.clientName} que está pronto para assinatura do cliente.</p></br>
@@ -136,11 +139,14 @@ export class ServiceInfoService {
       }),
 
       this.mailerService.sendMail({
-        to: [
-          'natacha.partner@klaston.com',
-          'tamara@klaston.com',
-          'it.support@klaston.com',
-        ],
+        to:
+          process.env.ENVIRONMENT == 'TEST'
+            ? ['it.support@klaston.com']
+            : [
+                'it.support@klaston.com',
+                'natacha.partner@klaston.com',
+                'tamara@klaston.com',
+              ],
         from: process.env.EMAIL_USER,
         subject: ` Daily report - Assinado - ${serviceInfo.clientName}`,
         html: `<p> Olá Klaston Managment, segue o documento do daily report assinado pela empresa para seu controle.</p>`,
