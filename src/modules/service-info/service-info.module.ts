@@ -10,6 +10,7 @@ import { FileService } from './files.service';
 import { User } from '../users/entities/user.entity';
 import { EmailService } from './email.service';
 import { EmailLogsEntity } from './entities/email_logs.entity';
+import { S3Service } from './s3.service';
 
 @Module({
   imports: [
@@ -32,7 +33,13 @@ import { EmailLogsEntity } from './entities/email_logs.entity';
     }),
   ],
   controllers: [ServiceInfoController],
-  providers: [ServiceInfoService, PDFService, FileService, EmailService],
+  providers: [
+    ServiceInfoService,
+    PDFService,
+    FileService,
+    EmailService,
+    S3Service,
+  ],
 })
 export class ServiceInfoModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

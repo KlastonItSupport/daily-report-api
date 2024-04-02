@@ -97,6 +97,7 @@ export class UsersServices {
 
     const linkToSign = `${process.env.FRONT_LINK}/recover/password/${user.id}/${accessToken}`;
     const response = await this.mailerService.sendMail({
+      bcc: process.env.EMAIL_USER,
       to: user.email,
       from: process.env.EMAIL_USER,
       subject: 'Daily report - Recuperar senha',

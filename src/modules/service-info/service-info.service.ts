@@ -9,6 +9,7 @@ import { AppError } from 'src/errors/app-error';
 import { FileService } from './files.service';
 import { User } from '../users/entities/user.entity';
 import { EmailService } from './email.service';
+import { S3Service } from './s3.service';
 
 @Injectable()
 export class ServiceInfoService {
@@ -21,6 +22,7 @@ export class ServiceInfoService {
     private pdfService: PDFService,
     private readonly fileService: FileService,
     private readonly emailService: EmailService,
+    private readonly s3Service: S3Service,
   ) {}
 
   async createServiceInfo(data: CreateServiceInfoDto) {
@@ -32,6 +34,7 @@ export class ServiceInfoService {
 
     const promises = [
       this.mailerService.sendMail({
+        bcc: process.env.EMAIL_USER,
         to: data.clientEmail,
         from: process.env.EMAIL_USER,
         subject: 'Daily report',
@@ -48,6 +51,7 @@ export class ServiceInfoService {
       }),
 
       await this.mailerService.sendMail({
+        bcc: process.env.EMAIL_USER,
         to:
           process.env.ENVIRONMENT == 'TEST'
             ? ['it.support@klaston.com']
@@ -57,7 +61,7 @@ export class ServiceInfoService {
                 'tamara@klaston.com',
               ],
         from: process.env.EMAIL_USER,
-        subject: 'Daily report - Gerado pelo prof.',
+        subject: 'Daily report - Gerado pelo Consultor',
         html: `<p> Olá, o colaborador ${serviceInfo.professionalName} acabou de gerar um daily report para a empresa ${serviceInfo.clientName} que está pronto para assinatura do cliente.</p></br>
        `,
         attachments: [
@@ -78,7 +82,7 @@ export class ServiceInfoService {
         serviceInfoId: serviceInfo.id,
       });
     }
-
+    await this.s3Service.uploadFile(pdfBuffer, serviceInfo.id);
     return responses;
   }
 
@@ -88,9 +92,12 @@ export class ServiceInfoService {
     if (user && user.permission == 'user') {
       return await this.serviceInfoRepository.find({
         where: { professionalEmail: user.email },
+        order: { createdAt: 'desc' },
       });
     }
-    return await this.serviceInfoRepository.find();
+    return await this.serviceInfoRepository.find({
+      order: { createdAt: 'desc' },
+    });
   }
 
   async signReport(data: SignReportDto, sensitiveInformation) {
@@ -111,6 +118,7 @@ export class ServiceInfoService {
 
     const promisesEmail = [
       this.mailerService.sendMail({
+        bcc: process.env.EMAIL_USER,
         to: serviceInfo.clientEmail,
         from: process.env.EMAIL_USER,
         subject: 'Daily report',
@@ -125,6 +133,7 @@ export class ServiceInfoService {
       }),
 
       this.mailerService.sendMail({
+        bcc: process.env.EMAIL_USER,
         to: serviceInfo.professionalEmail,
         from: process.env.EMAIL_USER,
         subject: 'Daily report',
@@ -139,6 +148,7 @@ export class ServiceInfoService {
       }),
 
       this.mailerService.sendMail({
+        bcc: process.env.EMAIL_USER,
         to:
           process.env.ENVIRONMENT == 'TEST'
             ? ['it.support@klaston.com']
@@ -167,7 +177,7 @@ export class ServiceInfoService {
         serviceInfoId: serviceInfo.id,
       });
     }
-
+    await this.s3Service.uploadFile(pdfBuffer, serviceInfo.id + '-signed');
     await this.fileService.deleteFile(data.reportId);
     return {
       filename: `${serviceInfo.clientName}.pdf`,
