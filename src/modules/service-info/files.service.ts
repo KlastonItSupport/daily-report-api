@@ -19,6 +19,7 @@ export class FileService {
 
   async deleteFile(reportId: string) {
     const filePath = `${process.env.UPLOAD_FOLDER_PATH}/signature-${reportId}.png`;
+
     try {
       fs.unlinkSync(filePath);
       return {
