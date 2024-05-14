@@ -25,7 +25,7 @@ export class UsersController {
 
   @Post('/forgot-password')
   async forgotPassword(@Body() data: ForgotPasswordDto) {
-    return this.usersServices.forgotPassword(data);
+    return this.usersServices.forgotPassword({ ...data });
   }
 
   @Post('/change/password')

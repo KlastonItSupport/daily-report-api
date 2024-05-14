@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 
@@ -8,6 +8,8 @@ import Database from './database';
 import { UsersModule } from './modules/users/users.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { ErrorLogsModule } from './middlewares/error-logs/error-logs.module';
+import { ErrorLoggingMiddleware } from './middlewares/error-logs/error-logs';
 
 @Module({
   imports: [
@@ -25,8 +27,13 @@ import { diskStorage } from 'multer';
         },
       }),
     }),
+    ErrorLogsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ErrorLoggingMiddleware],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ErrorLoggingMiddleware).forRoutes('*');
+  }
+}
