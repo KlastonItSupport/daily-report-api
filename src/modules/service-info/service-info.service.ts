@@ -97,6 +97,7 @@ export class ServiceInfoService {
     }
     return await this.serviceInfoRepository.find({
       order: { createdAt: 'desc' },
+      take: 150,
     });
   }
 
