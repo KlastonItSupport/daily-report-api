@@ -10,6 +10,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ErrorLogsModule } from './middlewares/error-logs/error-logs.module';
 import { ErrorLoggingMiddleware } from './middlewares/error-logs/error-logs';
+import { ExcelFilterModule } from './modules/kcertification/excel-filter/excel-filter.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ErrorLoggingMiddleware } from './middlewares/error-logs/error-logs';
       }),
     }),
     ErrorLogsModule,
+    ExcelFilterModule,
   ],
   controllers: [AppController],
   providers: [AppService, ErrorLoggingMiddleware],
